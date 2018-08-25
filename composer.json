@@ -1,0 +1,18 @@
+{
+    "name": "hypo/touch-the-girl",
+    "authors": [
+        {
+            "name": "hypo",
+            "email": "hypomail@gmail.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^6.3",
+        "monolog/monolog": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ttg\\": "lib/"
+        }
+    }
+}
