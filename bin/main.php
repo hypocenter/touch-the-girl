@@ -5,6 +5,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Ttg\WechatAccount;
 
+ini_set('memory_limit', -1);
+
 require __DIR__ . '/../vendor/autoload.php';
 
 $app = new \Ttg\Container();
@@ -12,8 +14,8 @@ $app = new \Ttg\Container();
 try {
     $app->accounts->loadUsers();
     $ca = count($app->accounts->all());
-    $cu = array_reduce($app->accounts->all(), function ($i, WechatAccount $u) {
-        return count($u->getUsers());
+    $cu = array_reduce($app->accounts->all(), function ($cur, WechatAccount $u) {
+        return $cur + count($u->getUsers());
     }, 0);
 
     echo "初始化完成，从 {$ca} 个账户中获取到 {$cu} 个用户\n";
@@ -67,8 +69,8 @@ try {
     $te = microtime(true);
 
     $diff = $te - $ts;
-    echo sprintf("完成！共推送 %d 条，用时 %02d:%02d, 平均每秒推送 %.2f 条\n",
-        $count, intval($diff / 60), $diff % 60, $count / $diff
+    echo sprintf("完成！共推送 %d 条，用时 %02d:%02d, 每分钟推送 %.2f 条\n",
+        $count, intval($diff / 60), $diff % 60, $count / $diff * 60
     );
     exit(0);
 
