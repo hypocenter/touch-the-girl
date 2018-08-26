@@ -16,4 +16,5 @@
      ]
  ];
  ```
+  - `chmod 777 log`
   - `php bin/main`
