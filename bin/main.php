@@ -32,55 +32,28 @@ try {
     $eCount = 0;
 
     $requests = function () use ($app, $client, &$count, &$eCount) {
-        // TODO 测试
-        yield function () use ($app, $client, &$count, &$eCount) {
-            return $app->accounts->all()[0]->asyncSendTemplateMessage($client, 123)
-                ->then(function ($success) use (&$count, &$eCount) {
-                    $count++;
-                    if (!$success) {
-                        $eCount++;
-                    }
-                    if (!$success || $count % 1000 === 0) {
-                        echo "已推送 $count 条数据, 失败 $eCount\n";
-                    }
+        foreach ($app->accounts->all() as $account) {
+            foreach ($account->getUsers() as $openId) {
+                yield function() use ($client, $account, $openId, &$count, &$eCount) {
+                    return $account->asyncSendTemplateMessage($client, $openId)
+                        ->then(function ($success) use (&$count, &$eCount) {
+                            $count++;
+                            if (!$success) {
+                                $eCount++;
+                            }
+                            if (!$success || $count % 1000 === 0) {
+                                echo "已推送 $count 条数据, 失败 $eCount\n";
+                            }
 
-                    return $success;
-                }, function () use (&$count, &$eCount) {
-                    $eCount++;
-                    $count++;
-                    echo "已推送 $count 条数据, 失败 $eCount\n";
-                });
-        };
-
-        sleep(2);
-
-        yield function () use ($app, $client, &$count, &$eCount) {
-            return $app->accounts->all()[0]->asyncSendTemplateMessage($client, 123)
-                ->then(function ($success) use (&$count, &$eCount) {
-                    $count++;
-                    if (!$success) {
-                        $eCount++;
-                    }
-                    if (!$success || $count % 1000 === 0) {
-                        echo "已推送 $count 条数据, 失败 $eCount\n";
-                    }
-
-                    return $success;
-                }, function () use (&$count, &$eCount) {
-                    $eCount++;
-                    $count++;
-                    echo "已推送 $count 条数据, 失败 $eCount\n";
-                });
-        };
-
-        // TODO
-//        foreach ($app->accounts->all() as $account) {
-//            foreach ($account->getUsers() as $openId) {
-//                yield function() use ($client, $account, $openId) {
-//                    return $account->asyncSendTemplateMessage($client, $openId);
-//                };
-//            }
-//        }
+                            return $success;
+                        }, function () use (&$count, &$eCount) {
+                            $eCount++;
+                            $count++;
+                            echo "已推送 $count 条数据, 失败 $eCount\n";
+                        });
+                };
+            }
+        }
     };
 
 
