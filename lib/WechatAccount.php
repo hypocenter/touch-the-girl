@@ -130,27 +130,12 @@ class WechatAccount implements ContainerAware
     {
         $openId = 'o8umIjobnDAml_kpoa9Y02vnGK9M'; // TODO 测试用
         $uri = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$this->getAccessToken()}";
+        $conf = $this->container->config->get('template-message');
         $data = [
             'touser' => $openId,
-            'template_id' => $this->container->config->get('template-message.id'),
-            'url' => $this->container->config->get('template-message.url'),
-            'data' => [
-                'first' => [
-                    'value' => 'first'
-                ],
-                'keyword1' => [
-                    'value' => 'keyword1'
-                ],
-                'keyword2' => [
-                    'value' => 'keyword2'
-                ],
-                'keyword3' => [
-                    'value' => 'keyword3'
-                ],
-                'remark' => [
-                    'value' => 'remark'
-                ]
-            ]
+            'template_id' => $conf['id'],
+            'url' => $conf['url'],
+            'data' => $conf['data']
         ];
 
         return $client->postAsync($uri, ['json' => $data])
