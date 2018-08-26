@@ -16,5 +16,10 @@
      ]
  ];
  ```
+  - 修改 config/template-message.php 以自定义消息内容
   - `chmod 777 log`
   - `php bin/main`
+  
+ ### 本地并发实验
+ 
+ ![result.png](./result.png)
