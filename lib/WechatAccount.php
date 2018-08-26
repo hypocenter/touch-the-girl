@@ -99,7 +99,11 @@ class WechatAccount implements ContainerAware
                 $url .= "&next_openid={$next}";
             }
 
-            $res = $client->get($url);
+            $p = $client->getAsync($url);
+            yield;
+
+            $res = $p->wait();
+
             $res = json_decode($res->getBody()->getContents(), true);
 
             if (!$res) {
@@ -128,7 +132,6 @@ class WechatAccount implements ContainerAware
      */
     public function asyncSendTemplateMessage(Client $client, $openId)
     {
-        $openId = 'o8umIjobnDAml_kpoa9Y02vnGK9M'; // TODO 测试用
         $uri = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={$this->getAccessToken()}";
         $conf = $this->container->config->get('template-message');
         $data = [
